@@ -1,0 +1,157 @@
+### creating the VAF files for the SciClone to find tumor clonality
+## S_313_tumor
+awk -v OFS='\t' '{print $1, $2, $11}' S_313_T__soma_snvs.fpfilter_tab_clean.vcf > S_313_T_varscan_vafs.dat
+
+more S_313_T_varscan_vafs.dat | grep -v "#" > S_313_T_varscan_vafs_int.dat
+
+tr ':' '\t' < S_313_T_varscan_vafs_int.dat > S_313_T_varscan_vafs_int2.dat
+
+awk -v OFS='\t' '{print $1, $2, $6, $7, $8}' S_313_T_varscan_vafs_int2.dat > S_313_T_varscan_vafs_int3.dat
+
+sed 's/^chr\|%$//g' S_313_T_varscan_vafs_int3.dat > S_313_T_varscan_vafs_final.dat
+
+echo $'CHROM\tPOS\tTUM1_REF_READS\tTUM1_VAR_READS\tTUM1_VAF' | cat - S_313_T_varscan_vafs_final.dat > S_313_T_varscan_vaf.dat
+
+mv S_313_T_varscan_vaf.dat SciClone_input
+mv *.dat int_files
+
+#!/bin/sh
+#
+#$ -N sciclone_input
+#$ -cwd
+#$ -e err_sciclone_input.txt
+#$ -o out_sciclone_input.txt
+#$ -S /bin/sh
+#$ -M vivek.das@ieo.eu
+#$ -m bea
+#$ -l h_vmem=25G
+
+
+cd /scratch/GT/vdas/pietro/exome_seq/results/varscan_out_17112014/Somatic_hc/fpfilter/fpflt_vcf_out/
+## S_313_ips1
+
+awk -v OFS='\t' '{print $1, $2, $11}' S_313_i1__soma_snvs.fpfilter_tab_clean.vcf > S_313_i1_varscan_vafs.dat
+
+more S_313_i1_varscan_vafs.dat | grep -v "#" > S_313_i1_varscan_vafs_int.dat
+
+tr ':' '\t' < S_313_i1_varscan_vafs_int.dat > S_313_i1_varscan_vafs_int2.dat
+
+awk -v OFS='\t' '{print $1, $2, $6, $7, $8}' S_313_i1_varscan_vafs_int2.dat > S_313_i1_varscan_vafs_int3.dat
+
+sed 's/^chr\|%$//g' S_313_i1_varscan_vafs_int3.dat > S_313_i1_varscan_vafs_final.dat
+
+#echo $'CHROM\tPOS\tHIPS1_REF_READS\tHIPS1_VAR_READS\tHIPS1_VAF' | cat - S_313_i1_varscan_vafs_final.dat > S_313_i1_varscan_vaf.dat
+
+#mv S_313_i1_varscan_vaf.dat SciClone_input
+#mv *.dat int_files
+
+## S_313_ips2
+
+awk -v OFS='\t' '{print $1, $2, $11}' S_313_i2__soma_snvs.fpfilter_tab_clean.vcf > S_313_i2_varscan_vafs.dat
+
+more S_313_i2_varscan_vafs.dat | grep -v "#" > S_313_i2_varscan_vafs_int.dat
+
+tr ':' '\t' < S_313_i2_varscan_vafs_int.dat > S_313_i2_varscan_vafs_int2.dat
+
+awk -v OFS='\t' '{print $1, $2, $6, $7, $8}' S_313_i2_varscan_vafs_int2.dat > S_313_i2_varscan_vafs_int3.dat
+
+sed 's/^chr\|%$//g' S_313_i2_varscan_vafs_int3.dat > S_313_i2_varscan_vafs_final.dat
+
+#echo $'CHROM\tPOS\tHIPS2_REF_READS\tHIPS2_VAR_READS\tHIPS2_VAF' | cat - S_313_i2_varscan_vafs_final.dat > S_313_i2_varscan_vaf.dat
+
+#mv S_313_i2_varscan_vaf.dat SciClone_input
+#mv *.dat int_files
+
+## S_333_tumor
+awk -v OFS='\t' '{print $1, $2, $11}' S_333_T__soma_snvs.fpfilter_tab_clean.vcf > S_333_T_varscan_vafs.dat
+
+more S_333_T_varscan_vafs.dat | grep -v "#" > S_333_T_varscan_vafs_int.dat
+
+tr ':' '\t' < S_333_T_varscan_vafs_int.dat > S_333_T_varscan_vafs_int2.dat
+
+awk -v OFS='\t' '{print $1, $2, $6, $7, $8}' S_333_T_varscan_vafs_int2.dat > S_333_T_varscan_vafs_int3.dat
+
+sed 's/^chr\|%$//g' S_333_T_varscan_vafs_int3.dat > S_333_T_varscan_vafs_final.dat
+
+#echo $'CHROM\tPOS\tLTUM2_REF_READS\tLTUM2_VAR_READS\tLTUM1_VAF' | cat - S_333_T_varscan_vafs_final.dat > S_333_T_varscan_vaf.dat
+
+#mv S_333_T_varscan_vaf.dat SciClone_input
+#mv *.dat int_files
+
+## S_333_ips1
+
+awk -v OFS='\t' '{print $1, $2, $11}' S_333_i1__soma_snvs.fpfilter_tab_clean.vcf > S_333_i1_varscan_vafs.dat
+
+more S_333_i1_varscan_vafs.dat | grep -v "#" > S_333_i1_varscan_vafs_int.dat
+
+tr ':' '\t' < S_333_i1_varscan_vafs_int.dat > S_333_i1_varscan_vafs_int2.dat
+
+awk -v OFS='\t' '{print $1, $2, $6, $7, $8}' S_333_i1_varscan_vafs_int2.dat > S_333_i1_varscan_vafs_int3.dat
+
+sed 's/^chr\|%$//g' S_333_i1_varscan_vafs_int3.dat > S_333_i1_varscan_vafs_final.dat
+
+#echo $'CHROM\tPOS\tLIPS1_REF_READS\tLIPS1_VAR_READS\tLIPS1_VAF' | cat - S_333_i1_varscan_vafs_final.dat > S_333_i1_varscan_vaf.dat
+
+#mv S_333_i1_varscan_vaf.dat SciClone_input
+#mv *.dat int_files
+
+## S_333_ips2
+
+awk -v OFS='\t' '{print $1, $2, $11}' S_333_i2__soma_snvs.fpfilter_tab_clean.vcf > S_333_i2_varscan_vafs.dat
+
+more S_333_i2_varscan_vafs.dat | grep -v "#" > S_333_i2_varscan_vafs_int.dat
+
+tr ':' '\t' < S_333_i2_varscan_vafs_int.dat > S_333_i2_varscan_vafs_int2.dat
+
+awk -v OFS='\t' '{print $1, $2, $6, $7, $8}' S_333_i2_varscan_vafs_int2.dat > S_333_i2_varscan_vafs_int3.dat
+
+sed 's/^chr\|%$//g' S_333_i2_varscan_vafs_int3.dat > S_333_i2_varscan_vafs_final.dat
+
+#echo $'CHROM\tPOS\tLIPS2_REF_READS\tLIPS2_VAR_READS\tLIPS2_VAF' | cat - S_333_i2_varscan_vafs_final.dat > S_333_i2_varscan_vaf.dat
+
+#mv S_333_i2_varscan_vaf.dat SciClone_input
+#mv *.dat int_files
+   
+
+echo "done"
+
+
+###removing first 3 lines from the _final.dat files
+
+#sed -e '1,3d' S_313_i1_varscan_vafs_final.dat > test.dat
+
+
+sed -e '1,3d' S_313_i1_varscan_vafs_final.dat > S_313_i1_varscan_vafs_final2.dat
+
+sed -e '1,3d' S_313_i2_varscan_vafs_final.dat > S_313_i2_varscan_vafs_final2.dat
+
+sed -e '1,3d' S_333_T_varscan_vafs_final.dat > S_333_T_varscan_vafs_final2.dat
+
+sed -e '1,3d' S_333_i1_varscan_vafs_final.dat > S_333_i1_varscan_vafs_final2.dat
+
+sed -e '1,3d' S_333_i2_varscan_vafs_final.dat > S_333_i2_varscan_vafs_final2.dat
+
+###adding headers
+echo $'CHROM\tPOS\tHIPS1_REF_READS\tHIPS1_VAR_READS\tHIPS1_VAF' | cat - S_313_i1_varscan_vafs_final2.dat > S_313_i1_varscan_vaf.dat
+
+echo $'CHROM\tPOS\tHIPS2_REF_READS\tHIPS2_VAR_READS\tHIPS2_VAF' | cat - S_313_i2_varscan_vafs_final2.dat > S_313_i2_varscan_vaf.dat
+
+echo $'CHROM\tPOS\tLTUM2_REF_READS\tLTUM2_VAR_READS\tLTUM1_VAF' | cat - S_333_T_varscan_vafs_final2.dat > S_333_T_varscan_vaf.dat
+
+echo $'CHROM\tPOS\tLIPS1_REF_READS\tLIPS1_VAR_READS\tLIPS1_VAF' | cat - S_333_i1_varscan_vafs_final2.dat > S_333_i1_varscan_vaf.dat
+
+echo $'CHROM\tPOS\tLIPS2_REF_READS\tLIPS2_VAR_READS\tLIPS2_VAF' | cat - S_333_i2_varscan_vafs_final2.dat > S_333_i2_varscan_vaf.dat
+
+####creating the bed files for the indel files that can be used for SciClone
+##Convert the vcf file to bed file first, use vcf2bed of bedops
+##export the path in the folder trying to work
+export PATH=$PATH:/scratch/GT/softwares/bin
+
+vcf2bed < S_333_T_LOH_snvs.fpfilter_tab_clean.vcf > S_333_T_LOH_snvs.fpfilter_tab_clean.bed 
+awk -v OFS='\t' '{print $1, $2, $3}' S_313_T_LOH_snvs.fpfilter_tab_clean.bed > S_313_T_LOH_snvs.fpfilter_tab_clean_3col.bed 
+sed 's/^chr\|%$//g' S_313_T_LOH_snvs.fpfilter_tab_clean_3col.bed > S_313_T_LOH_snvs.fpfilter_tab_clean_3col_final.bed
+
+
+#### comparing vcf files for Mutect and VarScan2
+
+bedtools intersect -a /scratch/GT/vdas/pietro/exome_seq/results/mutect/exonic_call/fpfilter/original_vcf_flt/S_313_T_mutect_snvs.fpfilter_tab_clean.vcf -b /scratch/GT/vdas/pietro/exome_seq/results/varscan_out_17112014/Somatic_hc/fpfilter/fpflt_vcf_out/S_313_T__soma_snvs.fpfilter_tab_clean.vcf -u -f 1.0| wc -l
