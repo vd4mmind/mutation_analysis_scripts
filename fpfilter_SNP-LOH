@@ -1,0 +1,182 @@
+# VarScan2 SNPS fpfilter runs for all samples to make true positive calls on the SNP LOH. 
+
+mkdir fpfilter
+
+### For tumor S_313_tumor
+perl -ane 'print join("\t",@F[0,1,1])."\n" unless(m/^#/)' S_313_T_soma_vcf.output.snp.LOH.hc.vcf > fpfilter/S_313_T_LOH_snvs.var
+
+#Given tumor.bam, a BAM file containing the SNVs, and its reference FASTA grch37.fa, run bam-readcount:
+
+/scratch/GT/softwares/bam-readcount/build/bin/bam-readcount -q1 -b15 -w1 -l fpfilter/S_313_T_LOH_snvs.var -f /scratch/GT/vdas/test_exome/exome/hg19.fa /scratch/GT/vdas/pietro/exome_seq/results/N_S8980/N_S8980.realigned.recal.bam > fpfilter/S_313_T_LOH_snvs.readcount
+
+# Run the fpfilter.pl script using the readcounts as an input:
+
+#perl fpfilter.pl --var-file snvs.vcf --readcount-file fpfilter/snvs.readcount --output-file fpfilter/snvs.fpfilter
+
+perl /scratch/GT/softwares/variant-filter-master/fpfilter.pl --var-file S_313_T_soma_vcf.output.snp.LOH.hc.vcf --readcount-file fpfilter/S_313_T_LOH_snvs.readcount --output-file fpfilter/S_313_T_LOH_snvs.fpfilter
+
+#### converting the fpfilter file to vcf do this for all the fpfilter files
+awk -v OFS='\t' '{print $1, $2, $8}' S_313_T_LOH_snvs.fpfilter  > S_313_T_LOH_snvs.fpfilter_tab
+bgzip S_313_T_LOH_snvs.fpfilter_tab
+tabix -s 1 -b 2 -e 2 S_313_T_LOH_snvs.fpfilter_tab.gz
+
+
+## VarScan files
+### working for S_313_tumor
+cat /scratch/GT/vdas/pietro/exome_seq/results/varscan_out_17112014/LOH/high_confidence/snp_LOH/S_313_T_soma_vcf.output.snp.LOH.hc.vcf | /scratch/GT/softwares/vcftools_0.1.12b/bin/vcf-annotate -a S_313_T_LOH_snvs.fpfilter_tab.gz -d key=INFO,ID=ANN,Number=1,Type=String,Description='FP filter annotation' -c CHROM,POS,FILTER > fpflt_vcf_out/S_313_T_LOH_snvs.fpfilter_tab.vcf
+
+###creating the clean vcf file
+
+egrep '(^#|PASS)' S_313_T_LOH_snvs.fpfilter_tab.vcf > S_313_T_LOH_snvs.fpfilter_tab_clean.vcf
+
+##############
+### For tumor S_313_ips1
+perl -ane 'print join("\t",@F[0,1,1])."\n" unless(m/^#/)' S_313_i1_soma_vcf.output.snp.LOH.hc.vcf > fpfilter/S_313_ips1_LOH_snvs.var
+
+#Given tumor.bam, a BAM file containing the SNVs, and its reference FASTA grch37.fa, run bam-readcount:
+
+/scratch/GT/softwares/bam-readcount/build/bin/bam-readcount -q1 -b15 -w1 -l fpfilter/S_313_ips1_LOH_snvs.var -f /scratch/GT/vdas/test_exome/exome/hg19.fa /scratch/GT/vdas/pietro/exome_seq/results/N_S8980/N_S8980.realigned.recal.bam > fpfilter/S_313_ips1_LOH_snvs.readcount
+
+# Run the fpfilter.pl script using the readcounts as an input:
+
+#perl fpfilter.pl --var-file snvs.vcf --readcount-file fpfilter/snvs.readcount --output-file fpfilter/snvs.fpfilter
+
+perl /scratch/GT/softwares/variant-filter-master/fpfilter.pl --var-file S_313_i1_soma_vcf.output.snp.LOH.hc.vcf --readcount-file fpfilter/S_313_ips1_LOH_snvs.readcount --output-file fpfilter/S_313_ips1_LOH_snvs.fpfilter
+
+#### converting the fpfilter file to vcf do this for all the fpfilter files
+awk -v OFS='\t' '{print $1, $2, $8}' S_313_ips1_LOH_snvs.fpfilter  > S_313_ips1_LOH_snvs.fpfilter_tab
+bgzip S_313_ips1_LOH_snvs.fpfilter_tab
+tabix -s 1 -b 2 -e 2 S_313_ips1_LOH_snvs.fpfilter_tab.gz
+
+
+## VarScan files
+### working for S_313_tumor
+cat /scratch/GT/vdas/pietro/exome_seq/results/varscan_out_17112014/LOH/high_confidence/snp_LOH/S_313_i1_soma_vcf.output.snp.LOH.hc.vcf | /scratch/GT/softwares/vcftools_0.1.12b/bin/vcf-annotate -a S_313_ips1_LOH_snvs.fpfilter_tab.gz -d key=INFO,ID=ANN,Number=1,Type=String,Description='FP filter annotation' -c CHROM,POS,FILTER > fpflt_vcf_out/S_313_ips1_LOH_snvs.fpfilter_tab.vcf
+
+###creating the clean vcf file
+cd fpflt_vcf_out
+egrep '(^#|PASS)' S_313_ips1_LOH_snvs.fpfilter_tab.vcf > S_313_ips1_LOH_snvs.fpfilter_tab_clean.vcf
+
+########
+#### for S_313_ips2
+perl -ane 'print join("\t",@F[0,1,1])."\n" unless(m/^#/)' S_313_i2_soma_vcf.output.snp.LOH.hc.vcf > fpfilter/S_313_ips2_LOH_snvs.var
+
+#Given tumor.bam, a BAM file containing the SNVs, and its reference FASTA grch37.fa, run bam-readcount:
+
+/scratch/GT/softwares/bam-readcount/build/bin/bam-readcount -q1 -b15 -w1 -l fpfilter/S_313_ips2_LOH_snvs.var -f /scratch/GT/vdas/test_exome/exome/hg19.fa /scratch/GT/vdas/pietro/exome_seq/results/N_S8980/N_S8980.realigned.recal.bam > fpfilter/S_313_ips2_LOH_snvs.readcount
+
+# Run the fpfilter.pl script using the readcounts as an input:
+
+#perl fpfilter.pl --var-file snvs.vcf --readcount-file fpfilter/snvs.readcount --output-file fpfilter/snvs.fpfilter
+
+perl /scratch/GT/softwares/variant-filter-master/fpfilter.pl --var-file S_313_i2_soma_vcf.output.snp.LOH.hc.vcf --readcount-file fpfilter/S_313_ips2_LOH_snvs.readcount --output-file fpfilter/S_313_ips2_LOH_snvs.fpfilter
+
+
+#### converting the fpfilter file to vcf do this for all the fpfilter files
+cd fpfilter
+awk -v OFS='\t' '{print $1, $2, $8}' S_313_ips2_LOH_snvs.fpfilter  > S_313_ips2_LOH_snvs.fpfilter_tab
+bgzip S_313_ips2_LOH_snvs.fpfilter_tab
+tabix -s 1 -b 2 -e 2 S_313_ips2_LOH_snvs.fpfilter_tab.gz
+
+
+## VarScan files
+### working for S_313_tumor
+cat /scratch/GT/vdas/pietro/exome_seq/results/varscan_out_17112014/LOH/high_confidence/snp_LOH/S_313_i2_soma_vcf.output.snp.LOH.hc.vcf | /scratch/GT/softwares/vcftools_0.1.12b/bin/vcf-annotate -a S_313_ips2_LOH_snvs.fpfilter_tab.gz -d key=INFO,ID=ANN,Number=1,Type=String,Description='FP filter annotation' -c CHROM,POS,FILTER > fpflt_vcf_out/S_313_ips2_LOH_snvs.fpfilter_tab.vcf
+
+###creating the clean vcf file
+cd fpflt_vcf_out
+egrep '(^#|PASS)' S_313_ips2_LOH_snvs.fpfilter_tab.vcf > S_313_ips2_LOH_snvs.fpfilter_tab_clean.vcf
+
+#########
+
+
+### For tumor S_333_tumor
+perl -ane 'print join("\t",@F[0,1,1])."\n" unless(m/^#/)' S_333_T_soma_vcf.output.snp.LOH.hc.vcf > fpfilter/S_333_T_LOH_snvs.var
+
+#Given tumor.bam, a BAM file containing the SNVs, and its reference FASTA grch37.fa, run bam-readcount:
+
+/scratch/GT/softwares/bam-readcount/build/bin/bam-readcount -q1 -b15 -w1 -l fpfilter/S_333_T_LOH_snvs.var -f /scratch/GT/vdas/test_exome/exome/hg19.fa /scratch/GT/vdas/pietro/exome_seq/results/N_S8981/N_S8981.realigned.recal.bam > fpfilter/S_333_T_LOH_snvs.readcount
+
+# Run the fpfilter.pl script using the readcounts as an input:
+
+#perl fpfilter.pl --var-file snvs.vcf --readcount-file fpfilter/snvs.readcount --output-file fpfilter/snvs.fpfilter
+
+perl /scratch/GT/softwares/variant-filter-master/fpfilter.pl --var-file S_333_T_soma_vcf.output.snp.LOH.hc.vcf --readcount-file fpfilter/S_333_T_LOH_snvs.readcount --output-file fpfilter/S_333_T_LOH_snvs.fpfilter
+
+#Log
+
+#### converting the fpfilter file to vcf do this for all the fpfilter files
+awk -v OFS='\t' '{print $1, $2, $8}' S_333_T_LOH_snvs.fpfilter  > S_333_T_LOH_snvs.fpfilter_tab
+bgzip S_333_T_LOH_snvs.fpfilter_tab
+tabix -s 1 -b 2 -e 2 S_333_T_LOH_snvs.fpfilter_tab.gz
+
+
+## VarScan files
+### working for S_313_tumor
+cat /scratch/GT/vdas/pietro/exome_seq/results/varscan_out_17112014/LOH/high_confidence/snp_LOH/S_333_T_soma_vcf.output.snp.LOH.hc.vcf | /scratch/GT/softwares/vcftools_0.1.12b/bin/vcf-annotate -a S_333_T_LOH_snvs.fpfilter_tab.gz -d key=INFO,ID=ANN,Number=1,Type=String,Description='FP filter annotation' -c CHROM,POS,FILTER > fpflt_vcf_out/S_333_T_LOH_snvs.fpfilter_tab.vcf
+
+###creating the clean vcf file
+cd fpflt_vcf_out
+egrep '(^#|PASS)' S_333_T_LOH_snvs.fpfilter_tab.vcf > S_333_T_LOH_snvs.fpfilter_tab_clean.vcf
+
+#################
+### For tumor S_333_ips1
+perl -ane 'print join("\t",@F[0,1,1])."\n" unless(m/^#/)' S_333_i1_soma_vcf.output.snp.LOH.hc.vcf > fpfilter/S_333_ips1_LOH_snvs.var
+
+#Given tumor.bam, a BAM file containing the SNVs, and its reference FASTA grch37.fa, run bam-readcount:
+
+/scratch/GT/softwares/bam-readcount/build/bin/bam-readcount -q1 -b15 -w1 -l fpfilter/S_333_ips1_LOH_snvs.var -f /scratch/GT/vdas/test_exome/exome/hg19.fa /scratch/GT/vdas/pietro/exome_seq/results/N_S8981/N_S8981.realigned.recal.bam > fpfilter/S_333_ips1_LOH_snvs.readcount
+
+# Run the fpfilter.pl script using the readcounts as an input:
+
+#perl fpfilter.pl --var-file snvs.vcf --readcount-file fpfilter/snvs.readcount --output-file fpfilter/snvs.fpfilter
+
+perl /scratch/GT/softwares/variant-filter-master/fpfilter.pl --var-file S_333_i1_soma_vcf.output.snp.LOH.hc.vcf --readcount-file fpfilter/S_333_ips1_LOH_snvs.readcount --output-file fpfilter/S_333_ips1_LOH_snvs.fpfilter
+
+#Log
+
+
+#### converting the fpfilter file to vcf do this for all the fpfilter files
+awk -v OFS='\t' '{print $1, $2, $8}' S_333_ips1_LOH_snvs.fpfilter  > S_333_ips1_LOH_snvs.fpfilter_tab
+bgzip S_333_ips1_LOH_snvs.fpfilter_tab
+tabix -s 1 -b 2 -e 2 S_333_ips1_LOH_snvs.fpfilter_tab.gz
+
+
+## VarScan files
+### working for S_313_tumor
+cat /scratch/GT/vdas/pietro/exome_seq/results/varscan_out_17112014/LOH/high_confidence/snp_LOH/S_333_i1_soma_vcf.output.snp.LOH.hc.vcf | /scratch/GT/softwares/vcftools_0.1.12b/bin/vcf-annotate -a S_333_ips1_LOH_snvs.fpfilter_tab.gz -d key=INFO,ID=ANN,Number=1,Type=String,Description='FP filter annotation' -c CHROM,POS,FILTER > fpflt_vcf_out/S_333_ips1_LOH_snvs.fpfilter_tab.vcf
+
+###creating the clean vcf file
+cd fpflt_vcf_out
+egrep '(^#|PASS)' S_333_ips1_LOH_snvs.fpfilter_tab.vcf > S_333_ips1_LOH_snvs.fpfilter_tab_clean.vcf
+
+#################
+### For tumor S_333_ips2
+perl -ane 'print join("\t",@F[0,1,1])."\n" unless(m/^#/)' S_333_i2_soma_vcf.output.snp.LOH.hc.vcf > fpfilter/S_333_ips2_LOH_snvs.var
+
+#Given tumor.bam, a BAM file containing the SNVs, and its reference FASTA grch37.fa, run bam-readcount:
+
+/scratch/GT/softwares/bam-readcount/build/bin/bam-readcount -q1 -b15 -w1 -l fpfilter/S_333_ips2_LOH_snvs.var -f /scratch/GT/vdas/test_exome/exome/hg19.fa /scratch/GT/vdas/pietro/exome_seq/results/N_S8981/N_S8981.realigned.recal.bam > fpfilter/S_333_ips2_LOH_snvs.readcount
+
+# Run the fpfilter.pl script using the readcounts as an input:
+
+#perl fpfilter.pl --var-file snvs.vcf --readcount-file fpfilter/snvs.readcount --output-file fpfilter/snvs.fpfilter
+
+perl /scratch/GT/softwares/variant-filter-master/fpfilter.pl --var-file S_333_i2_soma_vcf.output.snp.LOH.hc.vcf --readcount-file fpfilter/S_333_ips2_LOH_snvs.readcount --output-file fpfilter/S_333_ips2_LOH_snvs.fpfilter
+
+#Log
+
+
+#### converting the fpfilter file to vcf do this for all the fpfilter files
+awk -v OFS='\t' '{print $1, $2, $8}' S_333_ips2_LOH_snvs.fpfilter  > S_333_ips2_LOH_snvs.fpfilter_tab
+bgzip S_333_ips2_LOH_snvs.fpfilter_tab
+tabix -s 1 -b 2 -e 2 S_333_ips2_LOH_snvs.fpfilter_tab.gz
+
+
+## VarScan files
+### working for S_313_tumor
+cat /scratch/GT/vdas/pietro/exome_seq/results/varscan_out_17112014/LOH/high_confidence/snp_LOH/S_333_i2_soma_vcf.output.snp.LOH.hc.vcf | /scratch/GT/softwares/vcftools_0.1.12b/bin/vcf-annotate -a S_333_ips2_LOH_snvs.fpfilter_tab.gz -d key=INFO,ID=ANN,Number=1,Type=String,Description='FP filter annotation' -c CHROM,POS,FILTER > fpflt_vcf_out/S_333_ips2_LOH_snvs.fpfilter_tab.vcf
+
+###creating the clean vcf file
+cd fpflt_vcf_out
+egrep '(^#|PASS)' S_333_ips2_LOH_snvs.fpfilter_tab.vcf > S_333_ips2_LOH_snvs.fpfilter_tab_clean.vcf
