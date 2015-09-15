@@ -1,0 +1,46 @@
+[general]
+
+chrLenFile = /scratch/GT/vdas/pietro/exome_seq/test_Control_FREEC/hs19_chr.len
+window = 500
+
+step = 250
+ploidy = 2
+readCountThreshold = 50
+sex=XX
+outputDir = /scratch/GT/vdas/pietro/exome_seq/results/control_freec_out/output5_S313_tumor/
+BedGraphOutput=TRUE
+breakPointType=4
+
+gemMappabilityFile = /scratch/GT/vdas/pietro/exome_seq/test_Control_FREEC/out100m1_hg19.gem
+
+chrFiles =  /scratch/GT/vdas/test_exome/exome/
+
+maxThreads=6
+minCNAlength=2
+minMappabilityPerWindow=0.85
+breakPointThreshold = 1.5
+noisyData=TRUE
+printNA=FALSE
+intercept = 0 
+[sample]
+
+mateFile = /scratch/GT/vdas/pietro/exome_seq/results/T_S7998/T_S7998.realigned.recal.pileup
+inputFormat = pileup
+mateOrientation = FR
+
+[control]
+
+mateFile = /scratch/GT/vdas/pietro/exome_seq/results/N_S8980/N_S8980.realigned.recal.pileup
+inputFormat = pileup
+mateOrientation = FR
+
+[BAF]
+
+SNPfile = /scratch/GT/vdas/pietro/exome_seq/test_Control_FREEC/hg19_snp142.SingleDiNucl.1based.txt
+minimalCoveragePerPosition = 5
+minimalQualityPerPosition = 20
+shiftInQuality = 33
+
+[target]
+
+captureRegions = /scratch/GT/vdas/referenceBed/hg19/ss_v4/Exon_SSV4_clean.bed
