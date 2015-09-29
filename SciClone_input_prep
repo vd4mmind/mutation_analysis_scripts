@@ -27,7 +27,7 @@ mv *.dat int_files
 #$ -l h_vmem=25G
 
 
-cd /scratch/GT/vdas/pietro/exome_seq/results/varscan_out_17112014/Somatic_hc/fpfilter/fpflt_vcf_out/
+cd /path_to/vdas/client/exome_seq/results/varscan_out_17112014/Somatic_hc/fpfilter/fpflt_vcf_out/
 ## S_313_ips1
 
 awk -v OFS='\t' '{print $1, $2, $11}' S_313_i1__soma_snvs.fpfilter_tab_clean.vcf > S_313_i1_varscan_vafs.dat
@@ -154,4 +154,4 @@ sed 's/^chr\|%$//g' S_313_T_LOH_snvs.fpfilter_tab_clean_3col.bed > S_313_T_LOH_s
 
 #### comparing vcf files for Mutect and VarScan2
 
-bedtools intersect -a /scratch/GT/vdas/pietro/exome_seq/results/mutect/exonic_call/fpfilter/original_vcf_flt/S_313_T_mutect_snvs.fpfilter_tab_clean.vcf -b /scratch/GT/vdas/pietro/exome_seq/results/varscan_out_17112014/Somatic_hc/fpfilter/fpflt_vcf_out/S_313_T__soma_snvs.fpfilter_tab_clean.vcf -u -f 1.0| wc -l
+bedtools intersect -a /path_to/vdas/client/exome_seq/results/mutect/exonic_call/fpfilter/original_vcf_flt/S_313_T_mutect_snvs.fpfilter_tab_clean.vcf -b /path_to/vdas/client/exome_seq/results/varscan_out_17112014/Somatic_hc/fpfilter/fpflt_vcf_out/S_313_T__soma_snvs.fpfilter_tab_clean.vcf -u -f 1.0| wc -l
