@@ -9,4 +9,4 @@ For running the rna seq variant pipeline one can simply follow
 
 Example:
 
-./rna_seq_variant_pipeline.sh  test_sample /illumina/fastq/folder/samples/ /path_to/rnaseq/variants/out 12
+./rna_seq_variant_pipeline.sh  test_sample /illumina/fastq/sample_folder /path_to/rnaseq/variants/out 12
