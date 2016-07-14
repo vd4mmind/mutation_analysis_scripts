@@ -1,12 +1,11 @@
 #!/bin/sh
 #
-# INITIAL AUTHOR: Anand M.
 # MODIFIED: Vivek Das.
 # Exome-seq variant calling pieline accoring to GATK Best practices.
 # https://www.broadinstitute.org/gatk/guide/article?id=3891
 #
 # Call with following arguments
-# sh exome_variant_auto_call_gatk.sh  <output_basename> <fastq folder> <output_folder_loc> [cpus]
+# sh exome_auto_gatk_v2..sh  <output_basename> <fastq folder> <output_folder_loc> [cpus]
 #
 # Putting the bwa mem
 #
@@ -21,23 +20,23 @@ nproc=${4:-12}
 
 #Path to reference genome and Index files
 #star_ref="/scratch/GT/genomes/Homo_sapiens/UCSC_spiked/hg19/Sequence/STARindexes"
-bwa_idx="/scratch/GT/vdas/test_exome/exome/hg19"
-ref="/scratch/GT/vdas/test_exome/exome/hg19.fa"
+bwa_idx="/path/vdas/test_exome/exome/hg19"
+ref="/path/vdas/test_exome/exome/hg19.fa"
 
 #Path to STAR,java,gatk and picard tools
 java_home="/home/vdas/tools/jdk1.8.0_77/bin/java"
 #STAR="/scratch/GT/softwares/STAR-STAR_2.4.1c/bin/Linux_x86_64_static/STAR"
-bwamem="/scratch/GT/softwares/bwa/bwa"
-gatk="/scratch/GT/softwares/GATK-3.5/GenomeAnalysisTK.jar"
+bwamem="/path/softwares/bwa/bwa"
+gatk="/path/softwares/GATK-3.5/GenomeAnalysisTK.jar"
 picard="/home/vdas/tools/picard-tools-2.2.0/picard.jar"
 sambamba="/home/vdas/tools/sambamba/build/sambamba"
 
 #Path to gatk bundle set files
-millsIndels="/scratch/GT/GATK_2.8_bundle/ftp.broadinstitute.org/bundle/2.8/hg19/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf"
-KGIndels="/scratch/GT/GATK_2.8_bundle/ftp.broadinstitute.org/bundle/2.8/hg19/1000G_phase1.indels.hg19.sites.vcf"
-dbSNP138="/scratch/GT/GATK_2.8_bundle/ftp.broadinstitute.org/bundle/2.8/hg19/dbsnp_138.hg19.vcf"
+millsIndels="/path/GATK_2.8_bundle/ftp.broadinstitute.org/bundle/2.8/hg19/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf"
+KGIndels="/path/GATK_2.8_bundle/ftp.broadinstitute.org/bundle/2.8/hg19/1000G_phase1.indels.hg19.sites.vcf"
+dbSNP138="/path/GATK_2.8_bundle/ftp.broadinstitute.org/bundle/2.8/hg19/dbsnp_138.hg19.vcf"
 #Exon target baits from Agilent SSv4 set (should be upgraded to new version if new agilent kit is used)
-ss4exonbaits="/scratch/GT/vdas/referenceBed/hg19/ss_v4/Exon_SSV4_clean.bed"
+ss4exonbaits="/path/vdas/referenceBed/hg19/ss_v4/Exon_SSV4_clean.bed"
 
 #Create an output directory
 mkdir -p "$outloc/${bn}_processed"
