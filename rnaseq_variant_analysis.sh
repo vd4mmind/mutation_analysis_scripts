@@ -103,7 +103,7 @@ $java_home -Xmx2g -jar $gatk -T BaseRecalibrator -I $fout/${bn}"_realigned.bam" 
 echo -e "["$(date)"]\tPrinting recalibrated reads.."
 $java_home -Xmx2g -jar $gatk -T PrintReads -R $ref -I $fout/${bn}"_realigned.bam" -nct 12 -BQSR $fout/${bn}"_recal.table" -o $fout/${bn}"_recal.bam" 2>$fout/${bn}.BQSR2.log
 
-$java_home -Xmx2g -jar $gatk -T PrintReads -R $genomeFasta/genome.fa -I $dedup_split_bam/processed_indelrealign.bam -nct 50 -BQSR $dedup_split_bam/BQSR.table -o $dedup_split_bam/BQSR_recal.bam
+#$java_home -Xmx2g -jar $gatk -T PrintReads -R $genomeFasta/genome.fa -I $dedup_split_bam/processed_indelrealign.bam -nct 50 -BQSR $dedup_split_bam/BQSR.table -o $dedup_split_bam/BQSR_recal.bam
 
 rm $fout/${bn}"_realigned.bam"
 rm $fout/${bn}"_realigned.bai"
