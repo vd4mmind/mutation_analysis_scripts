@@ -4,6 +4,8 @@
 # Exome-seq variant calling pieline accoring to GATK Best practices.
 # https://www.broadinstitute.org/gatk/guide/article?id=3891
 #
+# This is just a germline automated workflow that will call SNPs and INDELs
+# In order to make this somatic one can simply stop post Step 2 and use Mutect2 on the processed bam files.
 # Call with following arguments
 # sh exome_auto_gatk_v2..sh  <output_basename> <fastq folder> <output_folder_loc> [cpus]
 # you can run the script in above mentioned way through another processing script that will log the processing with time at each step
@@ -102,7 +104,7 @@ $java_home -Xmx2g -jar $gatk -T IndelRealigner -R $ref -I $fout/${bn}"_dupMarked
 rm $fout/${bn}"_dupMarked.bam"
 rm $fout/${bn}"_dupMarked.bai"
 
-#Perform BQSR (base quality recalibration after realigment step. This is a standard test that is performed to Detect systematic errors 
+#Step 2: Perform BQSR (base quality recalibration after realigment step. This is a standard test that is performed to Detect systematic errors 
 # in base quality scores. 
 #Please refer to https://software.broadinstitute.org/gatk/documentation/tooldocs/current/org_broadinstitute_gatk_tools_walkers_bqsr_BaseRecalibrator.php)
 echo -e "["$(date)"]\tPerforming BQSR.."
@@ -113,7 +115,7 @@ $java_home -Xmx2g -jar $gatk -T BaseRecalibrator -I $fout/${bn}"_realigned.bam" 
 echo -e "["$(date)"]\tPrinting recalibrated reads.."
 $java_home -Xmx2g -jar $gatk -T PrintReads -R $ref -I $fout/${bn}"_realigned.bam" -nct 12 -BQSR $fout/${bn}"_recal.table" -o $fout/${bn}"_recal.bam" 2>$fout/${bn}.BQSR2.log
 
-#Call the variants post realignment and recalibration with Haplotype caller. It calls germline SNPs and indels via local re-assembly of haplotypes
+#Step 3:Call the variants post realignment and recalibration with Haplotype caller. It calls germline SNPs and indels via local re-assembly of haplotypes
 #Run HaplotypeCaller (please refer to https://software.broadinstitute.org/gatk/documentation/tooldocs/current/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php)
 echo -e "["$(date)"]\tRunning HaplotypeCaller.."
 $java_home -Xmx2g -jar $gatk -T HaplotypeCaller -R $ref -I $fout/${bn}"_recal.bam" -L $ss4exonbaits -dontUseSoftClippedBases -stand_call_conf 20.0 -stand_emit_conf 20.0 -o $fout/${bn}".vcf" 2>$fout/${bn}.HaplotypeCaller.log
