@@ -5,7 +5,7 @@
 # https://www.broadinstitute.org/gatk/guide/article?id=3891
 #
 # This is just a germline automated workflow that will call SNPs and INDELs
-# In order to make this somatic one can simply stop post Step 2 and use Mutect2 on the processed bam files.
+# In order to make this somatic one can simply stop post Step 2 and use Mutect2 or VarScan2 with their own custom scripts and filters on the processed bam files.
 # Call with following arguments
 # sh exome_auto_gatk_v2..sh  <output_basename> <fastq folder> <output_folder_loc> [cpus]
 # you can run the script in above mentioned way through another processing script that will log the processing with time at each step
