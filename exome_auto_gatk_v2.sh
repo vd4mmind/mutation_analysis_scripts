@@ -109,32 +109,31 @@ echo -e "["$(date)"]\tPerforming BQSR.."
 $java_home -Xmx2g -jar $gatk -T BaseRecalibrator -I $fout/${bn}"_realigned.bam" -R $ref -knownSites $KGIndels -knownSites $millsIndels -knownSites $dbSNP138 -o $fout/${bn}"_recal.table" -L $ss4exonbaits 2>$fout/${bn}.BQSR.log
 
 #Print recalibrated reads. This handle writes out sequence read data (for filtering, merging, subsetting etc)
+#Please refer to https://software.broadinstitute.org/gatk/documentation/tooldocs/current/org_broadinstitute_gatk_tools_walkers_readutils_PrintReads.php
 echo -e "["$(date)"]\tPrinting recalibrated reads.."
 $java_home -Xmx2g -jar $gatk -T PrintReads -R $ref -I $fout/${bn}"_realigned.bam" -nct 12 -BQSR $fout/${bn}"_recal.table" -o $fout/${bn}"_recal.bam" 2>$fout/${bn}.BQSR2.log
 
-#$java_home -Xmx2g -jar $gatk -T PrintReads -R $genomeFasta/genome.fa -I $dedup_split_bam/processed_indelrealign.bam -nct 50 -BQSR $dedup_split_bam/BQSR.table -o $dedup_split_bam/BQSR_recal.bam
-
-#rm $fout/${bn}"_realigned.bam"
-#rm $fout/${bn}"_realigned.bai"
-
-#Run HaplotypeCaller
+#Call the variants post realignment and recalibration with Haplotype caller. It calls germline SNPs and indels via local re-assembly of haplotypes
+#Run HaplotypeCaller (please refer to https://software.broadinstitute.org/gatk/documentation/tooldocs/current/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php)
 echo -e "["$(date)"]\tRunning HaplotypeCaller.."
 $java_home -Xmx2g -jar $gatk -T HaplotypeCaller -R $ref -I $fout/${bn}"_recal.bam" -L $ss4exonbaits -dontUseSoftClippedBases -stand_call_conf 20.0 -stand_emit_conf 20.0 -o $fout/${bn}".vcf" 2>$fout/${bn}.HaplotypeCaller.log
-
-#Filter variants for SNPs and then filter for qaulity scores
+# Seperate out the SNPs from the from INDELs followed by filtration
+#Filter variants for SNPs and then filter for qaulity scores. Variant filtration methods
 echo -e "["$(date)"]\tFiltering Point Variants.."
 
 $java_home -Xmx2g -jar $gatk -T SelectVariants -R $ref -V $fout/${bn}".vcf" -selectType SNP -o $fout/${bn}"_raw_snps.vcf"
 
-#### filter over snps for scores
+#### filter over snps for scores that includes the combination of different Variant filter expression
+# Filter variant calls based on INFO and FORMAT annotations
+# Please refer to https://software.broadinstitute.org/gatk/documentation/tooldocs/current/org_broadinstitute_gatk_tools_walkers_filters_VariantFiltration.php
 
 $java_home -Xmx2g -jar $gatk -T VariantFiltration -R $ref -V $fout/${bn}"_raw_snps.vcf" --filterExpression "DP < 5 || SB > -0.1 || QUAL < 50.0 || QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0 || DP > 500" --filterName "DAS_snp_filters" -o $fout/${bn}"_filtered_snps.vcf" 2>$fout/${bn}.VariantFilter_snps.log
 
 echo -e "["$(date)"]\tFiltering INDEL Variants.."
-###select indels
+###select indels with the SelectVariants handle and -selectType process to give raw indels
 $java_home -Xmx2g -jar $gatk -T SelectVariants -R $ref -V $fout/${bn}".vcf" -selectType INDEL -o $fout/${bn}"_raw_indels.vcf"
 
-#### filter over indel files
+#### filter over raw indel indel files based on ased on INFO and FORMAT annotations
 $java_home -Xmx2g -jar $gatk -T VariantFiltration -R $ref -V $fout/${bn}"_raw_indels.vcf" --filterExpression "QD < 2.0 || FS > 200.0 || ReadPosRankSum < -20.0 || SOR > 10.0" --filterName "DAS_indel_filters" -o $fout/${bn}"_filtered_indels.vcf" 2>$fout/${bn}.VariantFilter_indels.log
 
 echo -e "["$(date)"]\tDONE!"
